@@ -36,9 +36,9 @@ Additional information
 <li> The Swiftkey Predictive Apllication is hosted at 
     <a href="https://chuonghdh.shinyapps.io/SwiftKey_Project/"> chuonghdh.shinyapps.io </a> <br/>
 <li> The Detail of data preparation and algorithm modeling can access at 
-    <a href="">abc</a> <br/>
+    <a href="https://github.com/chuonghdh/SwiftKey_Project/tree/master/01_modeling">modeling sources</a> <br/>
 <li> The Detail of shiny app development can access at 
-    <a href="">abc</a> <br/>
+    <a href="https://github.com/chuonghdh/SwiftKey_Project/tree/master/02_shiny_app">shiny sources</a> <br/>
 <li> This pitch deck is hosted at 
     <a href="http://rpubs.com/chuonghdh/DSCapstoneProject_pitch_deck">rpubs.com</a> <br/>
 <li> The Capstone Project Milestone Report is hosted at 
@@ -48,5 +48,7 @@ Additional information
 <li> Source of profane words is located at 
     <a href="https://gist.github.com/ryanlewis/a37739d710ccdb4b406d#file-google_twunter_lol">profanity list</a> <br/>
 </div>
+
+**PS: Thanks for your reviewing, Please hire me for your own data science startup company :)**
 
 
