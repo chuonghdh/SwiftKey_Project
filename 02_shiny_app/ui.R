@@ -19,9 +19,9 @@ shinyUI(fluidPage(
       tags$textarea(id="iTextInput", rows=4, cols=40, "thanks for your review"),
       radioButtons("iSelectDataset", 
                   label = "Select Dataset:",
-                  choices = list("Removed stopwords dataset" = "withoutSW", 
-                                  "Having stopwords dataset" = "withSW"), 
-                  selected = "Having stopwords dataset"
+                  choices = list("Removed stopwords dataset" = 1, 
+                                  "Having stopwords dataset" = 2), 
+                  selected = 1
                   ),
       hr(),
       helpText(strong("Instruction:"),br(), 

@@ -1,4 +1,3 @@
-
 # This is the server logic for a Shiny web application.
 # You can find out more about building applications with Shiny here:
 #
@@ -25,9 +24,6 @@ processTime <<- NULL
 
 predictSentence <-function(sentence, dataset){
   inputText <<- sentence
-  triGramResults <<- NULL
-  binGramResults <<- NULL
-  uniGramResults <<- NULL
   
   start.time <- Sys.time()
   
@@ -39,11 +35,11 @@ predictSentence <-function(sentence, dataset){
     t <- tail(strsplit(x, " ")[[1]],3)
     n <- length(t)
     triPred = NULL; binPred = NULL; uniPred = NULL
-  
+    
     if(n >= 3) triPred <- predictWord(input=paste(t[n-2], t[n-1], t[n]), dataset)[order(freq,decreasing = TRUE)]
     if(n >= 2) binPred <- predictWord(input=paste(t[n-1], t[n]), dataset)[order(freq,decreasing = TRUE)]
     if(n >= 1) uniPred <- predictWord(input=paste(t[n]), dataset)[order(freq,decreasing = TRUE)]
-  
+    
     result <- c(triPred$predict[1],binPred$predict[1],uniPred$predict[1])
     triGramResults <<- triPred
     binGramResults <<- binPred
@@ -67,11 +63,11 @@ predictWord <- function(input, dataset) {
   ds <- dataset
   fstChar <- substr(input, 1, 1)
   n <- length(strsplit(input,split = " ")[[1]])
-  if (dataset=="withSW") {
+  if (dataset==2) {
     if(n==3) df <- triFinalALL[[fstChar]][inputterm==input] #ALL means include Stop Words
     if(n==2) df <- binFinalALL[[fstChar]][inputterm==input]
     if(n==1) df <- uniFinalALL[[fstChar]][inputterm==input]
-  } else if (dataset=="withoutSW") {
+  } else if (dataset==1) {
     if(n==3) df <- triFinalRSW[[fstChar]][inputterm==input] #RSW means Remove Stop Words
     if(n==2) df <- binFinalRSW[[fstChar]][inputterm==input]
     if(n==1) df <- uniFinalRSW[[fstChar]][inputterm==input]
@@ -87,7 +83,7 @@ cleanData <- function(x, cleanType = "train", dataset){
   x <- tm_map(x, content_transformer(function(x) iconv(x,from = "latin1", to="ASCII", sub="")))
   #low case and remove Stopwords
   x <- tm_map(x, content_transformer(tolower))
-  if(dataset == "withoutSW") x <- tm_map(x, removeWords, stopwords("english"))
+  if(dataset == 1) x <- tm_map(x, removeWords, stopwords("english"))
   #remove special character but not .?;"!() those will be a delimit signal when devided into ngram
   x <- tm_map(x,content_transformer(function(x) stri_replace_all_regex(x, "[^\\p{L}\\s[.?;!()\"]]+","")))
   #convert .?;!() character to " . " delimiter
@@ -107,18 +103,22 @@ getValue <- function(value, inputTextTrigger, inputSelectDataset){
   y<-inputSelectDataset
   returnResult <- NULL
   if (value == "inputText") returnResult<-inputText else
-  if (value == "processTime") returnResult<-round(processTime,4) else
-  if (value == "triGramResults") returnResult<-head(triGramResults,5) else
-  if (value == "binGramResults") returnResult<-head(binGramResults,5) else
-  if (value == "uniGramResults") returnResult<-head(uniGramResults,5) 
+    if (value == "processTime") returnResult<-round(processTime,4) else
+      if (value == "triGramResults") returnResult<-head(triGramResults,5) else
+        if (value == "binGramResults") returnResult<-head(binGramResults,5) else
+          if (value == "uniGramResults") returnResult<-head(uniGramResults,5) 
   returnResult
 }
 
 shinyServer(function(input, output) {
   
-  output$oResultText <- reactive({predictSentence(input$iTextInput, input$iSelectDataset)})
-  output$oInputText <- reactive({getValue("inputText",input$iTextInput, input$iSelectDataset)})
-  output$oProcessTime <- reactive({getValue("processTime",input$iTextInput, input$iSelectDataset)})
+  output$oResultText <- renderText({
+    triGramResults <<- NULL
+    binGramResults <<- NULL
+    uniGramResults <<- NULL
+    predictSentence(input$iTextInput, input$iSelectDataset)})
+  output$oInputText <- renderText({getValue("inputText",input$iTextInput, input$iSelectDataset)})
+  output$oProcessTime <- renderText({getValue("processTime",input$iTextInput, input$iSelectDataset)})
   output$oTriGramResults <- renderPrint({getValue("triGramResults",input$iTextInput, input$iSelectDataset)})
   output$oBinGramResults <- renderPrint({getValue("binGramResults",input$iTextInput, input$iSelectDataset)})
   output$oUniGramResults <- renderPrint({getValue("uniGramResults",input$iTextInput, input$iSelectDataset)})
